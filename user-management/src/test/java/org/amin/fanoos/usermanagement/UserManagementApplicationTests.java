@@ -32,7 +32,7 @@ class UserManagementApplicationTests {
 
 	@Test
 	public void createNewUser_returnsOk() {
-		ResponseEntity<String> response = restTemplate.getForEntity(getSignupFullUrl(), String.class);
+		ResponseEntity<String> response = restTemplate.postForEntity(getSignupFullUrl(), null, String.class);
 		assertEquals(response.getStatusCode(), HttpStatus.OK);
 	}
 }
