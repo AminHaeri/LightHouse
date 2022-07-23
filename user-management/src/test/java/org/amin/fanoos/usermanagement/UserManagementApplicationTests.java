@@ -1,38 +1,29 @@
 package org.amin.fanoos.usermanagement;
 
+import org.amin.fanoos.usermanagement.controller.UserRegistrationController;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.test.web.servlet.MockMvc;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@WebMvcTest(UserRegistrationController.class)
 class UserManagementApplicationTests {
 
-	private final String SIGNUP_BASE_URL = "http://localhost";
 	private final String SIGNUP_REL_PATH = "/api/v1/users";
 
-	@LocalServerPort
-	private int port;
-
 	@Autowired
-	private TestRestTemplate restTemplate;
-
-	private String getSignupFullUrl() {
-		return SIGNUP_BASE_URL + ":" + port + SIGNUP_REL_PATH;
-	}
+	private MockMvc mockMvc;
 
 	@Test
 	void contextLoads() {
 	}
 
 	@Test
-	public void createNewUser_withNullBody_returnsOk() {
-		ResponseEntity<String> response = restTemplate.postForEntity(getSignupFullUrl(), null, String.class);
-		assertEquals(response.getStatusCode(), HttpStatus.OK);
+	public void createNewUser_withNullBody_returnsOk() throws Exception {
+		mockMvc.perform(post(SIGNUP_REL_PATH))
+				.andExpect(status().isOk());
 	}
 }
