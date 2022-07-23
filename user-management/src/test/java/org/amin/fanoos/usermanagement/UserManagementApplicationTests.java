@@ -31,7 +31,7 @@ class UserManagementApplicationTests {
 	}
 
 	@Test
-	public void createNewUser_returnsOk() {
+	public void createNewUser_withNullBody_returnsOk() {
 		ResponseEntity<String> response = restTemplate.postForEntity(getSignupFullUrl(), null, String.class);
 		assertEquals(response.getStatusCode(), HttpStatus.OK);
 	}
