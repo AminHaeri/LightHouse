@@ -1,4 +1,5 @@
 rootProject.name = 'Fanoos'
 include ':user-management',
         ':user-management:user.web',
-        ':user-management:user.persistence'
+        ':user-management:user.persistence',
+        ':user-management:user.application'

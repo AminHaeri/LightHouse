@@ -23,6 +23,7 @@ dependencies {
 
     implementation project(":user-management:user.web")
     implementation project(":user-management:user.persistence")
+    implementation project(":user-management:user.application")
 }
 
 tasks.named('test') {
