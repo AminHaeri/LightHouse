@@ -1,9 +1,6 @@
 package org.amin.fanoos.usermanagement.user.persistence.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -13,7 +10,8 @@ import java.util.UUID;
 @Builder
 @Data
 @Entity(name = "role")
-public class RoleEntity {
+@EqualsAndHashCode(callSuper = true)
+public class RoleEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)

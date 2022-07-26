@@ -1,9 +1,6 @@
 package org.amin.fanoos.usermanagement.user.persistence.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -13,7 +10,8 @@ import java.util.UUID;
 @Builder
 @Data
 @Entity(name = "user")
-public class UserEntity {
+@EqualsAndHashCode(callSuper = true)
+public class UserEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -34,12 +32,4 @@ public class UserEntity {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "account_id")
     private AccountEntity accountEntity;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 }
