@@ -1,4 +1,4 @@
-package org.amin.fanoos.usermanagement.datafixtures;
+package org.amin.fanoos.usermanagement.user.web.datafixtures;
 
 import com.github.javafaker.Faker;
 import org.json.JSONException;

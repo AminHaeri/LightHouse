@@ -1,2 +1,3 @@
 rootProject.name = 'Fanoos'
-include 'user-management'
+include ':user-management',
+        ':user-management:user.web'

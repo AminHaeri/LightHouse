@@ -19,13 +19,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation('com.github.javafaker:javafaker:1.0.2') { exclude group: 'org.yaml' }
-
-    compileOnly 'org.projectlombok:lombok'
-//	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation project(":user-management:user.web")
 }
 
 tasks.named('test') {

@@ -1,4 +1,4 @@
-package org.amin.fanoos.usermanagement.controller;
+package org.amin.fanoos.usermanagement.user.web.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

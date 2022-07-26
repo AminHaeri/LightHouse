@@ -1,8 +1,7 @@
-package org.amin.fanoos.usermanagement;
+package org.amin.fanoos.usermanagement.user.web;
 
-import com.github.javafaker.Faker;
-import org.amin.fanoos.usermanagement.controller.UserRegistrationController;
-import org.amin.fanoos.usermanagement.datafixtures.UserFixtures;
+import org.amin.fanoos.usermanagement.user.web.controller.UserRegistrationController;
+import org.amin.fanoos.usermanagement.user.web.datafixtures.UserFixtures;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +20,6 @@ class UserManagementApplicationTests {
 
 	@Autowired
 	private MockMvc mockMvc;
-
-	private Faker faker = new Faker();
 
 	@Test
 	void contextLoads() {
