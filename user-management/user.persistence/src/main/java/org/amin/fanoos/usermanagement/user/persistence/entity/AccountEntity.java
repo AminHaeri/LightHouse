@@ -5,10 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -18,8 +15,12 @@ import java.util.UUID;
 @Entity(name = "account")
 public class AccountEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private UUID id;
+    private Long id;
+
+    @Column(name = "uid", nullable = false)
+    private UUID uId;
 
     @Column(name = "username", nullable = false, unique = true)
     private String userName;
