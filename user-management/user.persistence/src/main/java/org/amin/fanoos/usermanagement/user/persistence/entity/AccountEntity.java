@@ -3,6 +3,8 @@ package org.amin.fanoos.usermanagement.user.persistence.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -28,4 +30,10 @@ public class AccountEntity extends BaseEntity {
 
     @OneToOne(mappedBy = "accountEntity", orphanRemoval = true)
     private UserEntity userEntity;
+
+    @ManyToMany
+    @JoinTable(name = "account_role",
+            joinColumns = @JoinColumn(name = "account_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<RoleEntity> roleEntities = new LinkedHashSet<>();
 }
