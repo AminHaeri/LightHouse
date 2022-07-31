@@ -1,6 +1,6 @@
 package org.amin.fanoos.usermanagement.user.web.configs;
 
-import org.amin.fanoos.usermanagement.user.application.domain.Role;
+import org.amin.fanoos.usermanagement.user.application.domain.ERole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -73,7 +73,7 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
                 .inMemory()
                 .withClient(clientId)
                 .secret(new BCryptPasswordEncoder(12).encode(clientSecret))
-                .scopes(Stream.of(Role.ERole.values()).map(Enum::name).toArray(String[]::new))
+                .scopes(Stream.of(ERole.values()).map(Enum::name).toArray(String[]::new))
                 .authorizedGrantTypes("password", "refresh_token")
                 .accessTokenValiditySeconds(tokenValidity)
                 .refreshTokenValiditySeconds(refreshValidity);

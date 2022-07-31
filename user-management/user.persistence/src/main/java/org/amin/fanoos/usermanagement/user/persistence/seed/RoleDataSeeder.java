@@ -1,6 +1,6 @@
 package org.amin.fanoos.usermanagement.user.persistence.seed;
 
-import org.amin.fanoos.usermanagement.user.application.domain.Role;
+import org.amin.fanoos.usermanagement.user.application.domain.ERole;
 import org.amin.fanoos.usermanagement.user.persistence.entity.RoleEntity;
 import org.amin.fanoos.usermanagement.user.persistence.repository.RoleEntityRepository;
 import org.springframework.boot.CommandLineRunner;
@@ -19,7 +19,7 @@ public class RoleDataSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        for (Role.ERole role : Role.ERole.values()) {
+        for (ERole role : ERole.values()) {
             if (repository.findByName(role).isEmpty()) {
                 RoleEntity roleEntity = new RoleEntity(UUID.randomUUID(), role);
 
