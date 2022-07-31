@@ -29,7 +29,7 @@ public class UserRepository implements UserPort {
     @Override
     public User getUserByUserName(UserInfoCommand userInfoCommand) {
         UserEntity userEntity =
-                userEntityRepository.findByUserName(userInfoCommand.userName()).orElse(null);
+                userEntityRepository.findByAccountEntity_UserName(userInfoCommand.userName()).orElse(null);
 
         return userMapper.toDomain(userEntity);
     }
