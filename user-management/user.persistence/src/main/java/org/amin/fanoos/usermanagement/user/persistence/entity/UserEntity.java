@@ -7,17 +7,17 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 @Builder
-@Data
 @Entity(name = "user")
-@EqualsAndHashCode(callSuper = true)
 public class UserEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "uid", nullable = false)
+    @Column(name = "uid", nullable = false, columnDefinition = "VARBINARY NOT NULL")
     private UUID uId;
 
     @Column(name = "email", unique = true)
@@ -32,4 +32,12 @@ public class UserEntity extends BaseEntity {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "account_id")
     private AccountEntity accountEntity;
+
+    public UserEntity(UUID uId, String email, String firstName, String lastName, AccountEntity accountEntity) {
+        this.uId = uId;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.accountEntity = accountEntity;
+    }
 }

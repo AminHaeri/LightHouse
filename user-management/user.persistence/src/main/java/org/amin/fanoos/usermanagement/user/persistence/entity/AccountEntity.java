@@ -10,16 +10,16 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Data
+@Getter
+@Setter
 @Entity(name = "account")
-@EqualsAndHashCode(callSuper = true)
 public class AccountEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "uid", nullable = false)
+    @Column(name = "uid", nullable = false, columnDefinition = "VARBINARY NOT NULL")
     private UUID uId;
 
     @Column(name = "username", nullable = false, unique = true)
@@ -31,9 +31,17 @@ public class AccountEntity extends BaseEntity {
     @OneToOne(mappedBy = "accountEntity", orphanRemoval = true)
     private UserEntity userEntity;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "account_role",
-            joinColumns = @JoinColumn(name = "account_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
+            joinColumns = @JoinColumn(name = "account_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Set<RoleEntity> roleEntities = new LinkedHashSet<>();
+
+    public AccountEntity(UUID uId, String userName, String password,
+                         Set<RoleEntity> roleEntities) {
+        this.uId = uId;
+        this.userName = userName;
+        this.password = password;
+        this.roleEntities = roleEntities;
+    }
 }
