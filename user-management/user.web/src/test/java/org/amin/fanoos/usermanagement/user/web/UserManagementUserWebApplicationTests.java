@@ -14,7 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UserRegistrationController.class)
-class UserManagementApplicationTests {
+class UserManagementUserWebApplicationTests {
 
 	private final String SIGNUP_REL_PATH = "/api/v1/users";
 
