@@ -1,28 +1,26 @@
 package org.amin.fanoos.usermanagement.user.web;
 
-import org.amin.fanoos.usermanagement.user.application.domain.Account;
 import org.amin.fanoos.usermanagement.user.application.domain.ERole;
-import org.amin.fanoos.usermanagement.user.application.domain.Role;
 import org.amin.fanoos.usermanagement.user.application.domain.User;
 import org.amin.fanoos.usermanagement.user.application.port.out.UserPort;
 import org.amin.fanoos.usermanagement.user.application.port.out.command.UserInfoCommand;
+import org.amin.fanoos.usermanagement.user.web.before.Oauth2;
+import org.amin.fanoos.usermanagement.user.web.before.SuperUserManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 import static org.hamcrest.Matchers.*;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.util.AssertionErrors.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -32,10 +30,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class Oauth2Tests {
 
     private final String OAUTH_REL_PATH = "/oauth/token";
-    private final String HEADER_AUTHORIZATION = "Basic RmFub29zQ2xpZW50OkZhbm9vc1NlY3JldA==";
 
-    @Value("${security.oauth2.client.token-validity}")
-    private int tokenValidity;
+    @Autowired
+    private Oauth2 oauth2;
+
+    @Autowired
+    private SuperUserManager superUserManager;
 
     @Autowired
     private MockMvc mockMvc;
@@ -44,32 +44,18 @@ public class Oauth2Tests {
     private UserPort userPort;
 
     @Test
-    public void getOath2Token() throws Exception {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
-        String hashedPassword = encoder.encode("fanoos-aminhaeri");
+    public void createNewJwtToken_withSuperUserCredentials_returnsOkAndTokenResult() throws Exception {
+        User superUser = superUserManager.getSuperUser();
 
-        Role role = new Role(UUID.randomUUID(), ERole.ROLE_SUPERADMIN);
-        Account account = new Account(
-                UUID.randomUUID(),
-                "aminhaeri",
-                hashedPassword,
-                List.of(role));
-        User user = new User(
-                UUID.randomUUID(),
-                "aminhaeri@mail.com",
-                "amin",
-                "haeri",
-                account);
-
-        UserInfoCommand userInfoCommand = new UserInfoCommand("aminhaeri");
-        given(userPort.getUserByUserName(userInfoCommand)).willReturn(user);
+        UserInfoCommand userInfoCommand = new UserInfoCommand(superUser.getAccount().getUserName());
+        given(userPort.getUserByUserName(userInfoCommand)).willReturn(superUser);
 
         mockMvc.perform(post(OAUTH_REL_PATH)
-                        .header("Authorization", HEADER_AUTHORIZATION)
+                        .header("Authorization", oauth2.getAuthorizationHeaderEncoded())
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
                         .param("grant_type", "password")
-                        .param("username", "aminhaeri")
-                        .param("password", "fanoos-aminhaeri"))
+                        .param("username", superUser.getAccount().getUserName())
+                        .param("password", superUserManager.getSuperUserRawPassword()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.*", isA(ArrayList.class)))
@@ -79,6 +65,13 @@ public class Oauth2Tests {
                 .andExpect(jsonPath("$.token_type", is("bearer")))
                 .andExpect(jsonPath("$.scope", containsString(ERole.ROLE_SUPERADMIN.name())))
                 .andExpect(jsonPath("$.jti", anything()))
-                .andExpect(jsonPath("$.expires_in", is(this.tokenValidity - 1)));
+                .andExpect(jsonPath("$.expires_in", is(oauth2.tokenValidity - 1)));
+    }
+
+    @Test
+    public void createNewAuthorizationHeader_withClientIdAndSecretEncoded() throws IOException {
+        assertEquals("Authorization header must be correctly encoded base on clientId and clientSecret",
+                "Basic RmFub29zQ2xpZW50OkZhbm9vc1NlY3JldA==",
+                oauth2.getAuthorizationHeaderEncoded());
     }
 }
