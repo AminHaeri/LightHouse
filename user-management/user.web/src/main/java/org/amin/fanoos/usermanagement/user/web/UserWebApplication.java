@@ -12,7 +12,6 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 })
 @EnableAuthorizationServer
 @EnableResourceServer
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class UserWebApplication {
 
 	public static void main(String[] args) {
