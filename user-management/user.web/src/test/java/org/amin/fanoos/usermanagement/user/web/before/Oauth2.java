@@ -5,6 +5,7 @@ import org.amin.fanoos.usermanagement.user.application.port.out.UserPort;
 import org.amin.fanoos.usermanagement.user.application.port.out.command.UserInfoCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.json.JacksonJsonParser;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -53,5 +54,15 @@ public class Oauth2 {
                 .param("grant_type", "password")
                 .param("username", user.getAccount().getUserName())
                 .param("password", rawPassword));
+    }
+
+    public String obtainAccessToken(User user, String rawPassword) throws Exception {
+        String result = postUserAuth(user, rawPassword)
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        JacksonJsonParser jsonParser = new JacksonJsonParser();
+        return jsonParser.parseMap(result).get("access_token").toString();
     }
 }

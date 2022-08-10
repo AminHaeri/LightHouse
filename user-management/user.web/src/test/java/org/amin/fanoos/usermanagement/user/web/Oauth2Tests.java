@@ -43,7 +43,7 @@ public class Oauth2Tests {
     }
 
     @Test
-    public void createNewAuthorizationHeader_withClientIdAndSecretEncoded() throws Exception {
+    public void createNewAuthorizationHeader_withClientIdAndSecretEncoded() {
         assertEquals("Authorization header must be correctly encoded base on clientId and clientSecret",
                 "Basic RmFub29zQ2xpZW50OkZhbm9vc1NlY3JldA==",
                 oauth2.getAuthorizationHeaderEncoded());
