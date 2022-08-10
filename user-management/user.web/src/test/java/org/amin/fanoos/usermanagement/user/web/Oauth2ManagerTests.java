@@ -1,8 +1,8 @@
 package org.amin.fanoos.usermanagement.user.web;
 
 import org.amin.fanoos.usermanagement.user.application.domain.ERole;
-import org.amin.fanoos.usermanagement.user.web.before.Oauth2;
-import org.amin.fanoos.usermanagement.user.web.before.SuperUserManager;
+import org.amin.fanoos.usermanagement.user.web.manager.Oauth2Manager;
+import org.amin.fanoos.usermanagement.user.web.manager.SuperUserManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -19,17 +19,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebAppConfiguration
 @AutoConfigureMockMvc
 @SpringBootTest(classes = UserWebApplication.class)
-public class Oauth2Tests {
+public class Oauth2ManagerTests {
 
     @Autowired
-    private Oauth2 oauth2;
+    private Oauth2Manager oauth2Manager;
 
     @Autowired
     private SuperUserManager superUserManager;
 
     @Test
     public void createNewJwtToken_withSuperUserCredentials_returnsOkAndTokenResult() throws Exception {
-        oauth2.postUserAuth(superUserManager.getSuperUser(), superUserManager.getSuperUserRawPassword())
+        oauth2Manager.postUserAuth(superUserManager.getSuperUser(), superUserManager.getSuperUserRawPassword())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.*", isA(ArrayList.class)))
@@ -39,13 +39,13 @@ public class Oauth2Tests {
                 .andExpect(jsonPath("$.token_type", is("bearer")))
                 .andExpect(jsonPath("$.scope", containsString(ERole.ROLE_SUPERADMIN.name())))
                 .andExpect(jsonPath("$.jti", anything()))
-                .andExpect(jsonPath("$.expires_in", is(oauth2.tokenValidity - 1)));
+                .andExpect(jsonPath("$.expires_in", is(oauth2Manager.tokenValidity - 1)));
     }
 
     @Test
     public void createNewAuthorizationHeader_withClientIdAndSecretEncoded() {
         assertEquals("Authorization header must be correctly encoded base on clientId and clientSecret",
                 "Basic RmFub29zQ2xpZW50OkZhbm9vc1NlY3JldA==",
-                oauth2.getAuthorizationHeaderEncoded());
+                oauth2Manager.getAuthorizationHeaderEncoded());
     }
 }

@@ -1,4 +1,4 @@
-package org.amin.fanoos.usermanagement.user.web.before;
+package org.amin.fanoos.usermanagement.user.web.manager;
 
 import org.amin.fanoos.usermanagement.user.application.domain.User;
 import org.amin.fanoos.usermanagement.user.application.port.out.UserPort;
@@ -19,7 +19,7 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @Component
-public class Oauth2 {
+public class Oauth2Manager {
 
     private final String OAUTH_REL_PATH = "/oauth/token";
 
@@ -64,5 +64,9 @@ public class Oauth2 {
 
         JacksonJsonParser jsonParser = new JacksonJsonParser();
         return jsonParser.parseMap(result).get("access_token").toString();
+    }
+
+    public String getJwtToken(User user, String rawPassword) throws Exception {
+        return "Bearer " + obtainAccessToken(user, rawPassword);
     }
 }
