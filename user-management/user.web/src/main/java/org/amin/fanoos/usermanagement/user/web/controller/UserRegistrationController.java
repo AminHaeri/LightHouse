@@ -14,6 +14,6 @@ public class UserRegistrationController {
     @PostMapping
     @PreAuthorize("hasAuthority(T(org.amin.fanoos.usermanagement.user.application.domain.ERole).ROLE_SUPERADMIN)")
     public ResponseEntity<String> registerUser() {
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }
