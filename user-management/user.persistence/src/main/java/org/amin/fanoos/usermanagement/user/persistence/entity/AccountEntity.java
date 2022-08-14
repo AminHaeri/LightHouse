@@ -31,7 +31,7 @@ public class AccountEntity extends BaseEntity {
     @OneToOne(mappedBy = "accountEntity", orphanRemoval = true)
     private UserEntity userEntity;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinTable(name = "account_role",
             joinColumns = @JoinColumn(name = "account_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
