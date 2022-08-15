@@ -1,8 +1,8 @@
 package org.amin.fanoos.usermanagement.user.web;
 
+import org.amin.fanoos.usermanagement.user.web.datafixture.UserFixtures;
 import org.amin.fanoos.usermanagement.user.web.manager.Oauth2Manager;
 import org.amin.fanoos.usermanagement.user.web.manager.SuperUserManager;
-import org.amin.fanoos.usermanagement.user.web.datafixture.UserFixtures;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -23,7 +23,6 @@ import java.util.UUID;
 
 @Repository
 @Slf4j
-@Component
 @Adapter
 public class UserRepository implements UserPort {
 
