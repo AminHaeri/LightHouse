@@ -1,4 +1,4 @@
-package org.amin.fanoos.usermanagement.user.web.manager;
+package org.amin.fanoos.usermanagement.manager;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.amin.fanoos.usermanagement.user.application.domain.Account;

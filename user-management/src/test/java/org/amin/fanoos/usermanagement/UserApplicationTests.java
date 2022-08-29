@@ -1,9 +1,11 @@
-package org.amin.fanoos.usermanagement.user.web;
+package org.amin.fanoos.usermanagement;
 
-import org.amin.fanoos.usermanagement.user.web.datafixture.UserFixtures;
-import org.amin.fanoos.usermanagement.user.web.manager.Oauth2Manager;
-import org.amin.fanoos.usermanagement.user.web.manager.SuperUserManager;
+import org.amin.fanoos.usermanagement.datafixture.UserFixtures;
+import org.amin.fanoos.usermanagement.manager.Oauth2Manager;
+import org.amin.fanoos.usermanagement.manager.SuperUserManager;
+import org.amin.fanoos.usermanagement.seeder.DataSeeder;
 import org.json.JSONObject;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -11,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -20,8 +23,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 //@ContextConfiguration
 @WebAppConfiguration
 @AutoConfigureMockMvc
-@SpringBootTest(classes = UserWebApplication.class)
-class UserWebApplicationTests {
+@SpringBootTest
+class UserApplicationTests {
 
     private final String SIGNUP_REL_PATH = "/api/v1/users";
     private final String HEADER_AUTHORIZATION = "Authorization";
@@ -34,6 +37,11 @@ class UserWebApplicationTests {
 
     @Autowired
     private SuperUserManager superUserManager;
+
+    @BeforeAll
+    public static void runSeeders(@Autowired DataSeeder dataSeeder) {
+        dataSeeder.run();
+    }
 
     @Test
     void contextLoads() {
@@ -53,6 +61,7 @@ class UserWebApplicationTests {
     }
 
     @Test
+    @Transactional
     public void createNewUser_withUserEmailAndPassword_returnsJson() throws Exception {
         JSONObject fakeUserRequest = UserFixtures.newFakeUserRequest();
         JSONObject userResponse = UserFixtures.userResponseSuccessful(fakeUserRequest);

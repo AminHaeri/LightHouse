@@ -7,7 +7,6 @@ import org.amin.fanoos.usermanagement.user.persistence.entity.UserEntity;
 import org.amin.fanoos.usermanagement.user.persistence.repository.RoleEntityRepository;
 import org.amin.fanoos.usermanagement.user.persistence.repository.UserEntityRepository;
 import org.amin.fanoos.usermanagement.user.persistence.security.PasswordEncoder;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
@@ -15,7 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Component
-public class UserDataSeeder implements CommandLineRunner {
+public class UserDataSeeder implements Seeder {
 
     private final UserEntityRepository userEntityRepository;
     private final RoleEntityRepository roleEntityRepository;
@@ -30,7 +29,7 @@ public class UserDataSeeder implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void seed() {
         if (userEntityRepository.findByAccountEntity_RoleEntities_Name(ERole.ROLE_SUPERADMIN).isEmpty() &&
                 roleEntityRepository.findByName(ERole.ROLE_SUPERADMIN).isPresent()) {
             RoleEntity roleEntity = roleEntityRepository.findByName(ERole.ROLE_SUPERADMIN).get();

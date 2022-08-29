@@ -1,8 +1,8 @@
-package org.amin.fanoos.usermanagement.user.web;
+package org.amin.fanoos.usermanagement;
 
+import org.amin.fanoos.usermanagement.manager.Oauth2Manager;
+import org.amin.fanoos.usermanagement.manager.SuperUserManager;
 import org.amin.fanoos.usermanagement.user.application.domain.ERole;
-import org.amin.fanoos.usermanagement.user.web.manager.Oauth2Manager;
-import org.amin.fanoos.usermanagement.user.web.manager.SuperUserManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebAppConfiguration
 @AutoConfigureMockMvc
-@SpringBootTest(classes = UserWebApplication.class)
+@SpringBootTest
 public class Oauth2ManagerTests {
 
     @Autowired
