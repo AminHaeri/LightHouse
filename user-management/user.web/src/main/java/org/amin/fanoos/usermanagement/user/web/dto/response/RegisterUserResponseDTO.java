@@ -5,21 +5,26 @@ import lombok.Data;
 import org.amin.fanoos.usermanagement.user.application.domain.ERole;
 
 import java.util.List;
-import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 public class RegisterUserResponseDTO {
 
-    private UUID uId;
+    private final String message = "User registered successfully.";
 
-    private String userName;
+    private UserData data;
 
-    private String email;
+    @Data
+    @AllArgsConstructor
+    public static class UserData {
+        private String userName;
 
-    private String firstName;
+        private String email;
 
-    private String lastName;
+        private String firstName;
 
-    private List<ERole> roles;
+        private String lastName;
+
+        private List<ERole> roles;
+    }
 }

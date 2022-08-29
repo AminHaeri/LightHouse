@@ -25,12 +25,12 @@ public class RegisterUserMapperImpl implements RegisterUserMapper {
 
     @Override
     public RegisterUserResponseDTO toResponse(User user) {
-        return new RegisterUserResponseDTO(
-                user.getId(),
+        return new RegisterUserResponseDTO(new RegisterUserResponseDTO.UserData(
                 user.getAccount().getUserName(),
                 user.getEmail(),
                 user.getFirstName(),
                 user.getLastName(),
-                user.getAccount().getRoles().stream().map(Role::getName).collect(Collectors.toList()));
+                user.getAccount().getRoles().stream().map(Role::getName).collect(Collectors.toList())
+        ));
     }
 }

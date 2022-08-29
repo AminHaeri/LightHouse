@@ -1,4 +1,4 @@
-package org.amin.fanoos.usermanagement.user.web.datafixture;
+package org.amin.fanoos.usermanagement.datafixture;
 
 import com.github.javafaker.Faker;
 import org.amin.fanoos.usermanagement.user.application.domain.ERole;
@@ -28,7 +28,11 @@ public class UserFixtures {
 
     public static JSONObject userResponseSuccessful(JSONObject userRequest) throws JSONException {
         JSONObject user = new JSONObject()
-                .put("email", userRequest.get("email"));
+                .put("userName", userRequest.get("userName"))
+                .put("email", userRequest.get("email"))
+                .put("firstName", userRequest.get("firstName"))
+                .put("lastName", userRequest.get("lastName"))
+                .put("roles", userRequest.get("roles"));
 
         return new JSONObject()
                 .put("message", "User registered successfully.")

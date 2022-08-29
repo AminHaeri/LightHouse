@@ -1,4 +1,4 @@
-package org.amin.fanoos.usermanagement.user.web.manager;
+package org.amin.fanoos.usermanagement.manager;
 
 import org.amin.fanoos.usermanagement.user.application.domain.User;
 import org.amin.fanoos.usermanagement.user.application.port.out.UserPort;
@@ -26,8 +26,8 @@ public class Oauth2Manager {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
-    private UserPort userPort;
+//    @MockBean
+//    private UserPort userPort;
 
     @Value("${security.oauth2.client.token-validity}")
     public int tokenValidity;
@@ -45,8 +45,8 @@ public class Oauth2Manager {
     }
 
     public ResultActions postUserAuth(User user, String rawPassword) throws Exception {
-        UserInfoCommand userInfoCommand = new UserInfoCommand(user.getAccount().getUserName());
-        given(userPort.getUserByUserName(userInfoCommand)).willReturn(user);
+//        UserInfoCommand userInfoCommand = new UserInfoCommand(user.getAccount().getUserName());
+//        given(userPort.getUserByUserName(userInfoCommand)).willReturn(user);
 
         return mockMvc.perform(post(OAUTH_REL_PATH)
                 .header("Authorization", this.getAuthorizationHeaderEncoded())
