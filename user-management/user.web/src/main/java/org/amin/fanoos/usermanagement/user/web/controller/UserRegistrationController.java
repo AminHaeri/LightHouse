@@ -31,9 +31,13 @@ public class UserRegistrationController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAuthority(T(org.amin.fanoos.usermanagement.user.application.domain.ERole).ROLE_SUPERADMIN)")
+    @PreAuthorize(
+            "hasAuthority(T(org.amin.fanoos.usermanagement.user.application.domain.ERole).ROLE_SUPERADMIN) or " +
+            "hasAuthority(T(org.amin.fanoos.usermanagement.user.application.domain.ERole).ROLE_ADMIN)"
+    )
     public ResponseEntity<RegisterUserResponseDTO> registerUser(
-            @Valid @RequestBody RegisterUserRequestDTO registerUserRequestDTO, BindingResult bindingResult) {
+            @Valid @RequestBody RegisterUserRequestDTO registerUserRequestDTO,
+            BindingResult bindingResult) {
         RegisterUserCommand cmd = registerUserMapper.toCmd(registerUserRequestDTO);
         RegisterUserResponseDTO registerUserResponseDTO =
                 registerUserMapper.toResponse(registerUserUseCase.registerUser(cmd));
