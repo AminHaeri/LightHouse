@@ -1,5 +1,6 @@
 package org.amin.fanoos.usermanagement.user.web.mapper;
 
+import org.amin.fanoos.usermanagement.user.application.domain.ERole;
 import org.amin.fanoos.usermanagement.user.application.domain.Role;
 import org.amin.fanoos.usermanagement.user.application.domain.User;
 import org.amin.fanoos.usermanagement.user.application.port.in.command.RegisterUserCommand;
@@ -7,6 +8,7 @@ import org.amin.fanoos.usermanagement.user.web.dto.request.RegisterUserRequestDT
 import org.amin.fanoos.usermanagement.user.web.dto.response.RegisterUserResponseDTO;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -20,7 +22,7 @@ public class RegisterUserMapperImpl implements RegisterUserMapper {
                 registerUserRequestDTO.getEmail(),
                 registerUserRequestDTO.getFirstName(),
                 registerUserRequestDTO.getLastName(),
-                registerUserRequestDTO.getRoles());
+                registerUserRequestDTO.getRoles() == null ? List.of(ERole.ROLE_USER) : registerUserRequestDTO.getRoles());
     }
 
     @Override
