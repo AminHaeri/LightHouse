@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebAppConfiguration
 @AutoConfigureMockMvc
 @SpringBootTest
-class UserApplicationTests {
+class UserManagementTests {
 
     private final String SIGNUP_REL_PATH = "/api/v1/users";
     private final String HEADER_AUTHORIZATION = "Authorization";
@@ -54,10 +54,11 @@ class UserApplicationTests {
     }
 
     @Test
+    @Transactional
     public void createNewUser_withNullBody_returnsCreated() throws Exception {
         mockMvc.perform(post(SIGNUP_REL_PATH)
                         .header(HEADER_AUTHORIZATION, getJwtForSuperUser()))
-                .andExpect(status().isCreated());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
