@@ -4,6 +4,7 @@ import org.amin.fanoos.usermanagement.datafixture.UserFixtures;
 import org.amin.fanoos.usermanagement.manager.Oauth2Manager;
 import org.amin.fanoos.usermanagement.manager.SuperUserManager;
 import org.amin.fanoos.usermanagement.seeder.DataSeeder;
+import org.amin.fanoos.usermanagement.user.application.domain.ERole;
 import org.hamcrest.Matchers;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeAll;
@@ -11,11 +12,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Locale;
 
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -30,6 +34,9 @@ class UserManagementTests {
 
     private final String SIGNUP_REL_PATH = "/api/v1/users";
     private final String HEADER_AUTHORIZATION = "Authorization";
+
+    @Autowired
+    private MessageSource messageSource;
 
     @Autowired
     private MockMvc mockMvc;
@@ -71,7 +78,8 @@ class UserManagementTests {
                 true,
                 true,
                 true,
-                true);
+                true,
+                ERole.ROLE_USER);
 
         JSONObject userResponse = UserFixtures.userResponseSuccessful(fakeUserRequest);
         mockMvc.perform(post(SIGNUP_REL_PATH)
@@ -91,7 +99,8 @@ class UserManagementTests {
                 true,
                 false,
                 true,
-                true);
+                true,
+                ERole.ROLE_USER);
 
         mockMvc.perform(post(SIGNUP_REL_PATH)
                         .header(HEADER_AUTHORIZATION, getJwtForSuperUser())
@@ -112,7 +121,8 @@ class UserManagementTests {
                 true,
                 true,
                 false,
-                true);
+                true,
+                ERole.ROLE_USER);
 
         JSONObject userResponse = UserFixtures.userResponseSuccessful(fakeUserRequest);
         mockMvc.perform(post(SIGNUP_REL_PATH)
@@ -122,5 +132,35 @@ class UserManagementTests {
                 .andExpect(status().isCreated())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(userResponse.toString()));
+    }
+
+    @Test
+    @Transactional
+    public void createNewUser_withSuperAdminRole_returnsErrorResponse() throws Exception {
+        JSONObject fakeUserRequest = UserFixtures.newFakeUserRequest(
+                true,
+                true,
+                true,
+                true,
+                true,
+                ERole.ROLE_SUPERADMIN);
+
+        String response = messageSource.getMessage(
+                "error.unauthorized.roles",
+                new Object[] {
+                        fakeUserRequest.get("userName"),
+                        fakeUserRequest.getJSONArray("roles").get(0),
+                        ERole.ROLE_SUPERADMIN.name()
+                },
+                Locale.getDefault());
+        mockMvc.perform(post(SIGNUP_REL_PATH)
+                        .header(HEADER_AUTHORIZATION, getJwtForSuperUser())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(fakeUserRequest.toString()))
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.status", Matchers.is(HttpStatus.UNAUTHORIZED.value())))
+                .andExpect(jsonPath("$.message", Matchers.is(response)))
+                .andExpect(jsonPath("$.timestamp", Matchers.is(notNullValue())));
     }
 }

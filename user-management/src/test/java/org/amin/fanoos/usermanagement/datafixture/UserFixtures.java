@@ -17,9 +17,10 @@ public class UserFixtures {
             boolean isPassword,
             boolean isEmail,
             boolean isFirstName,
-            boolean isLastName) throws JSONException {
+            boolean isLastName,
+            ERole eRole) throws JSONException {
         JSONArray fakeRolesJsonArray = new JSONArray();
-        List<ERole> fakeRoles = List.of(ERole.ROLE_USER);
+        List<ERole> fakeRoles = List.of(eRole);
         fakeRoles.forEach(fakeRolesJsonArray::put);
 
         JSONObject request = new JSONObject();

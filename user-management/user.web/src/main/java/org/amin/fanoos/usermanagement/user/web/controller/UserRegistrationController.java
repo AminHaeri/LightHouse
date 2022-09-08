@@ -1,5 +1,6 @@
 package org.amin.fanoos.usermanagement.user.web.controller;
 
+import org.amin.fanoos.usermanagement.user.application.domain.ERole;
 import org.amin.fanoos.usermanagement.user.application.port.in.command.RegisterUserCommand;
 import org.amin.fanoos.usermanagement.user.application.port.in.usecase.RegisterUserUseCase;
 import org.amin.fanoos.usermanagement.user.web.dto.request.RegisterUserRequestDTO;
@@ -8,6 +9,8 @@ import org.amin.fanoos.usermanagement.user.web.mapper.RegisterUserMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.Collection;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/api/v1/users")
