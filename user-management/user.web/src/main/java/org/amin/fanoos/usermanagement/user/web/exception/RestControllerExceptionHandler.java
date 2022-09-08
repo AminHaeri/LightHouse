@@ -4,6 +4,7 @@ import org.amin.fanoos.usermanagement.user.web.error.ErrorResponse;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -18,28 +19,41 @@ public class RestControllerExceptionHandler {
         this.messageSource = messageSource;
     }
 
-    public ResponseEntity<ErrorResponse> handleException(Exception exception, String messageSourceId) {
+    public ResponseEntity<ErrorResponse> handleException(Exception exception, HttpStatus status) {
         exception.printStackTrace();
-        StringBuilder messageBuilder = new StringBuilder();
-        messageBuilder.append(messageSource.getMessage(messageSourceId, null, Locale.US))
-                .append(": ")
-                .append("[")
-                .append(exception.getMessage())
-                .append("]");
 
         ErrorResponse errorResponse =
-                new ErrorResponse(HttpStatus.BAD_REQUEST.value(), messageBuilder.toString(), System.currentTimeMillis());
+                new ErrorResponse(status.value(), exception.getMessage(), System.currentTimeMillis());
 
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errorResponse, status);
+    }
+
+    public ResponseEntity<ErrorResponse> handleException(Exception exception, HttpStatus status, String messageSourceId) {
+        exception.printStackTrace();
+        String message = messageSource.getMessage(messageSourceId, null, Locale.getDefault()) +
+                ": " +
+                "[" +
+                exception.getMessage() +
+                "]";
+
+        ErrorResponse errorResponse =
+                new ErrorResponse(status.value(), message, System.currentTimeMillis());
+
+        return new ResponseEntity<>(errorResponse, status);
     }
 
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleException(IllegalArgumentException exception) {
-        return handleException(exception, "exceptions.malformed_request");
+        return handleException(exception, HttpStatus.BAD_REQUEST, "exceptions.malformed_request");
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleException(AuthorizationServiceException exception) {
+        return handleException(exception, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleException(Exception exception) {
-        return handleException(exception, "exceptions.unknown");
+        return handleException(exception, HttpStatus.BAD_REQUEST, "exceptions.unknown");
     }
 }
