@@ -79,7 +79,7 @@ class UserManagementTests {
     @Test
     @Transactional
     public void createNewUser_withValidRequest_returnsSuccessResponse() throws Exception {
-        postNewFakeUser(ERole.ROLE_USER, true);
+        postNewFakeUserBySuperAdmin(ERole.ROLE_USER, true);
     }
 
     @Test
@@ -107,7 +107,7 @@ class UserManagementTests {
     @Test
     @Transactional
     public void createNewUser_withoutFirstName_returnsSuccessResponse() throws Exception {
-        postNewFakeUser(ERole.ROLE_USER,false);
+        postNewFakeUserBySuperAdmin(ERole.ROLE_USER,false);
     }
 
     @Test
@@ -121,14 +121,11 @@ class UserManagementTests {
                 true,
                 ERole.ROLE_SUPERADMIN);
 
-        String response = messageSource.getMessage(
-                "error.unauthorized.roles",
-                new Object[] {
-                        ERole.ROLE_SUPERADMIN.name(),
-                        fakeUserRequest.get("userName"),
-                        fakeUserRequest.getJSONArray("roles").get(0)
-                },
-                Locale.getDefault());
+        String response = getUnauthorizedMessage(
+                ERole.ROLE_SUPERADMIN,
+                (String) fakeUserRequest.get("userName"),
+                (ERole) fakeUserRequest.getJSONArray("roles").get(0));
+
         mockMvc.perform(post(SIGNUP_REL_PATH)
                         .header(HEADER_AUTHORIZATION, getJwtForSuperUser())
                         .contentType(MediaType.APPLICATION_JSON)
@@ -143,7 +140,7 @@ class UserManagementTests {
     @Test
     @Transactional
     public void normalUserCreateNewUser_withAdminRole_returnsErrorResponse() throws Exception {
-        JSONObject fakeUserRequest = postNewFakeUser(ERole.ROLE_USER, true);
+        JSONObject fakeUserRequest = postNewFakeUserBySuperAdmin(ERole.ROLE_USER, true);
 
         JSONObject fakeAdminUserRequest = UserFixtures.newFakeUserRequest(
                 true,
@@ -153,14 +150,10 @@ class UserManagementTests {
                 true,
                 ERole.ROLE_ADMIN);
 
-        String response = messageSource.getMessage(
-                "error.unauthorized.roles",
-                new Object[] {
-                        fakeUserRequest.getJSONArray("roles").get(0),
-                        fakeAdminUserRequest.get("userName"),
-                        fakeAdminUserRequest.getJSONArray("roles").get(0)
-                },
-                Locale.getDefault());
+        String response = getUnauthorizedMessage(
+                (ERole) fakeUserRequest.getJSONArray("roles").get(0),
+                (String) fakeAdminUserRequest.get("userName"),
+                (ERole) fakeAdminUserRequest.getJSONArray("roles").get(0));
 
         String token = getJwtForUser(
                 UserJsonMapper.toUser(fakeUserRequest),
@@ -178,7 +171,41 @@ class UserManagementTests {
                 .andExpect(jsonPath("$.timestamp", Matchers.is(notNullValue())));
     }
 
-    private JSONObject postNewFakeUser(ERole role, boolean isFirstName) throws Exception {
+    @Test
+    @Transactional
+    public void normalUserCreateNewUser_withUserRole_returnsErrorResponse() throws Exception {
+        JSONObject fakeUserRequest = postNewFakeUserBySuperAdmin(ERole.ROLE_USER, true);
+
+        JSONObject fakeNewUserRequest = UserFixtures.newFakeUserRequest(
+                true,
+                true,
+                true,
+                true,
+                true,
+                ERole.ROLE_USER);
+
+        String response = getUnauthorizedMessage(
+                (ERole) fakeUserRequest.getJSONArray("roles").get(0),
+                (String) fakeNewUserRequest.get("userName"),
+                (ERole) fakeNewUserRequest.getJSONArray("roles").get(0));
+
+        String token = getJwtForUser(
+                UserJsonMapper.toUser(fakeUserRequest),
+                (String) fakeUserRequest.get("password")
+        );
+
+        mockMvc.perform(post(SIGNUP_REL_PATH)
+                        .header(HEADER_AUTHORIZATION, token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(fakeNewUserRequest.toString()))
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.status", Matchers.is(HttpStatus.UNAUTHORIZED.value())))
+                .andExpect(jsonPath("$.message", Matchers.is(response)))
+                .andExpect(jsonPath("$.timestamp", Matchers.is(notNullValue())));
+    }
+
+    private JSONObject postNewFakeUserBySuperAdmin(ERole role, boolean isFirstName) throws Exception {
         JSONObject fakeUserRequest = UserFixtures.newFakeUserRequest(
                 true,
                 true,
@@ -196,5 +223,16 @@ class UserManagementTests {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(userResponse.toString()));
         return fakeUserRequest;
+    }
+
+    private String getUnauthorizedMessage(ERole currentUserRole, String newUserName, ERole newUserRole) {
+        return messageSource.getMessage(
+                "error.unauthorized.roles",
+                new Object[]{
+                        currentUserRole.name(),
+                        newUserName,
+                        newUserRole.name()
+                },
+                Locale.getDefault());
     }
 }
