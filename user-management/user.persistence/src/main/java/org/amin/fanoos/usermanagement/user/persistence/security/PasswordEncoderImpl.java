@@ -7,8 +7,6 @@ import org.springframework.stereotype.Service;
 public class PasswordEncoderImpl implements PasswordEncoder {
     @Override
     public String hashedPassword(String password) {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
-
-        return encoder.encode(password);
+        return new BCryptPasswordEncoder(12).encode(password);
     }
 }

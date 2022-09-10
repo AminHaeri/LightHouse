@@ -51,9 +51,9 @@ public class UserRegistrationMiddleware {
             throw new AuthorizationServiceException(messageSource.getMessage(
                     "error.unauthorized.roles",
                     new Object[]{
+                            currentUserRole.name(),
                             registerUserRequestDTO.getUserName(),
-                            registerUserRequestDTO.getRoles().get(0).name(),
-                            currentUserRole.name()
+                            registerUserRequestDTO.getRoles().get(0).name()
                     },
                     Locale.getDefault()));
         }
