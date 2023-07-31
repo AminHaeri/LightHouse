@@ -13,7 +13,6 @@ import org.amin.fanoos.usermanagement.user.persistence.entity.UserEntity;
 import org.amin.fanoos.usermanagement.user.persistence.mapper.UserMapper;
 import org.amin.fanoos.usermanagement.user.persistence.security.PasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
