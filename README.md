@@ -41,8 +41,6 @@ This repository follows the Hexagonal Architecture pattern. Also, it's structure
 With this, we can see that the current structure of a Bounded Context is:
 
 ```scala
-$ tree -L 5 src
-    
 user-management // The module for user managment
 ├── user.application // The applicat and domain layer of the user-managment module
 │   └── port // Inside the application layer all is ports in and out
