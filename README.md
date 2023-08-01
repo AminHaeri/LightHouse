@@ -1,7 +1,4 @@
 <!--suppress HtmlDeprecatedAttribute -->
-<p align="center">
-    <img src="public/assets/hexagon.jpg" alt="hexagon">
-</p>
 
 <h1 align="center">
   Hexagonal Architecture, DDD & TDD in Spring
